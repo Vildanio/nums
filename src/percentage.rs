@@ -32,6 +32,10 @@ impl Percentage {
         Ratio::from_percentage(self)
     }
 
+    pub const fn negate(self) -> Option<Self> {
+        Self::from_f64(-self.value)
+    }
+
     pub const fn add(self, rhs: Self) -> Option<Self> {
         Self::from_f64(self.value + rhs.value)
     }
