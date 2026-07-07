@@ -26,14 +26,14 @@ impl<C: Currency> Money<C> {
     // You can sum 5 dollars and 2 dollars, but you can't
     // multiply or divide 5 dollars by 2 dollars.
 
-    pub const fn add(self, rhs: &Self) -> Option<Self> {
+    pub const fn add(self, rhs: Self) -> Option<Self> {
         match self.value.checked_add(rhs.value) {
             Some(sum) => Some(Self::from_u32(sum)),
             None => None,
         }
     }
 
-    pub const fn sub(self, rhs: &Self) -> Option<Self> {
+    pub const fn sub(self, rhs: Self) -> Option<Self> {
         match self.value.checked_sub(rhs.value) {
             Some(diff) => Some(Self::from_u32(diff)),
             None => None,
