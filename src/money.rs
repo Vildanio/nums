@@ -1,4 +1,4 @@
-use std::{fmt::Formatter, marker::PhantomData};
+use std::marker::PhantomData;
 
 pub type Rubles = Money<currencies::Ruble>;
 pub type Dollars = Money<currencies::Dollar>;
@@ -56,29 +56,29 @@ impl<C: Currency> Money<C> {
 }
 
 pub trait Currency: Sized {
-    type FormattingOptions: Default;
-
-    fn format(value: u32, options: &Self::FormattingOptions, f: &mut Formatter);
+    const SYMBOL: char;
 }
 
 pub mod currencies {
+    use crate::Currency;
+
     pub struct Ruble;
-    pub struct RubleFormattingOptions {
-        // ...
+    impl Currency for Ruble {
+        const SYMBOL: char = '₽';
     }
 
     pub struct Dollar;
-    pub struct DollarFormattingOptions {
-        // ...
+    impl Currency for Dollar {
+        const SYMBOL: char = '$';
     }
 
     pub struct Euro;
-    pub struct EuroFormattingOptions {
-        // ...
+    impl Currency for Euro {
+        const SYMBOL: char = '€';
     }
 
     pub struct Yuan;
-    pub struct YuanFormattingOptions {
-        // ...
+    impl Currency for Yuan {
+        const SYMBOL: char = '¥';
     }
 }
