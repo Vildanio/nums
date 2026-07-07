@@ -47,4 +47,12 @@ impl Ratio {
     pub const fn div(self, rhs: &Self) -> Option<Self> {
         Self::from_f64(self.value / rhs.value)
     }
+
+    pub const fn mul_f64(self, rhs: f64) -> Option<Self> {
+        Self::from_f64(self.value * rhs)
+    }
+
+    pub const fn div_f64(self, rhs: f64) -> Option<Self> {
+        Self::from_f64(self.value / rhs)
+    }
 }
