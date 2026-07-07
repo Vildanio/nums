@@ -1,5 +1,10 @@
 use std::{fmt::Formatter, marker::PhantomData};
 
+pub type Rubles = Money<currencies::Ruble>;
+pub type Dollars = Money<currencies::Dollar>;
+pub type Euros = Money<currencies::Euro>;
+pub type Yuans = Money<currencies::Yuan>;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Money<C: Currency> {
     value: u32,
