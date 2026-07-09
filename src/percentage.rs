@@ -18,6 +18,14 @@ impl Percentage {
         }
     }
 
+    pub const fn from_f64_unchecked(value: f64) -> Self {
+        if value.is_normal() {
+            Self { value }
+        } else {
+            panic!("Tried to create invalid percentage")
+        }
+    }
+
     pub const fn into_f64(self) -> f64 {
         self.value
     }
