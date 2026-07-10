@@ -12,6 +12,8 @@ pub struct Money<C: Currency> {
 }
 
 impl<C: Currency> Money<C> {
+    pub const ZERO: Money<C> = Self::from_u32(0);
+
     pub const fn from_u32(value: u32) -> Self {
         Self {
             value,
