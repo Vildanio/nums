@@ -42,14 +42,14 @@ impl<C: Currency> Money<C> {
         }
     }
 
-    pub const fn mul(self, rhs: u32) -> Option<Self> {
+    pub const fn mul_u32(self, rhs: u32) -> Option<Self> {
         match self.value.checked_mul(rhs) {
             Some(product) => Some(Self::from_u32(product)),
             None => None,
         }
     }
 
-    pub const fn div(self, rhs: u32) -> Option<Self> {
+    pub const fn div_u32(self, rhs: u32) -> Option<Self> {
         match self.value.checked_div(rhs) {
             Some(quotient) => Some(Self::from_u32(quotient)),
             None => None,
