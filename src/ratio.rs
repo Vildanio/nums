@@ -1,5 +1,3 @@
-use crate::Percentage;
-
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Ratio {
     value: f64,
@@ -28,16 +26,6 @@ impl Ratio {
 
     pub const fn into_f64(self) -> f64 {
         self.value
-    }
-
-    pub const fn from_percentage(value: Percentage) -> Self {
-        Self {
-            value: value.into_f64() / 100.0,
-        }
-    }
-
-    pub const fn into_percentage(self) -> Percentage {
-        Percentage::from_ratio(self)
     }
 
     pub const fn negate(self) -> Option<Self> {
