@@ -1,4 +1,5 @@
 use std::fmt;
+use std::iter::Sum;
 use std::marker::PhantomData;
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -103,6 +104,18 @@ impl<C: Currency> Money<C> {
 // ============================================================
 // Реализация трейтов для удобной работы
 // ============================================================
+
+impl<C: Currency> Sum for Money<C> {
+    fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
+        let mut total = Money::default();
+
+        for m in iter.into_iter() {
+            total = total + m;
+        }
+
+        total
+    }
+}
 
 impl<C: Currency> Add for Money<C> {
     type Output = Self;
