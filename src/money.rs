@@ -19,7 +19,7 @@ pub type Yuans = Money<currencies::Yuan>;
 /// Хранит значение в минимальных единицах (копейках, центах и т.д.)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Money<C: Currency> {
-    value: u64, // Используем u64 для большей вместимости
+    value: u32, // Используем u32 для большей вместимости
     _currency: PhantomData<C>,
 }
 
@@ -32,7 +32,7 @@ impl<C: Currency> Money<C> {
     // ===== Конструкторы =====
 
     /// Создает деньги из минимальных единиц (копейки, центы)
-    pub const fn from_minor(value: u64) -> Self {
+    pub const fn from_minor(value: u32) -> Self {
         Self {
             value,
             _currency: PhantomData,
@@ -41,7 +41,7 @@ impl<C: Currency> Money<C> {
 
     /// Создает деньги из основных единиц (рубли, доллары)
     /// Использует коэффициент валюты для пересчета
-    pub const fn from_major(value: u64) -> Self {
+    pub const fn from_major(value: u32) -> Self {
         Self {
             value: value * C::MINOR_UNITS,
             _currency: PhantomData,
@@ -51,12 +51,12 @@ impl<C: Currency> Money<C> {
     // ===== Геттеры =====
 
     /// Возвращает значение в минимальных единицах
-    pub const fn as_minor(&self) -> u64 {
+    pub const fn as_minor(&self) -> u32 {
         self.value
     }
 
     /// Возвращает значение в основных единицах
-    pub const fn as_major(&self) -> u64 {
+    pub const fn as_major(&self) -> u32 {
         self.value / C::MINOR_UNITS
     }
 
@@ -106,7 +106,7 @@ impl<C: Currency> Money<C> {
     }
 
     /// Умножение на целое число
-    pub const fn mul_u64(self, rhs: u64) -> Option<Self> {
+    pub const fn mul_u32(self, rhs: u32) -> Option<Self> {
         match self.value.checked_mul(rhs) {
             Some(product) => Some(Self::from_minor(product)),
             None => None,
@@ -114,7 +114,7 @@ impl<C: Currency> Money<C> {
     }
 
     /// Деление на целое число
-    pub const fn div_u64(self, rhs: u64) -> Option<Self> {
+    pub const fn div_u32(self, rhs: u32) -> Option<Self> {
         match self.value.checked_div(rhs) {
             Some(quotient) => Some(Self::from_minor(quotient)),
             None => None,
@@ -142,27 +142,27 @@ impl<C: Currency> Sub for Money<C> {
     }
 }
 
-impl<C: Currency> Mul<u64> for Money<C> {
+impl<C: Currency> Mul<u32> for Money<C> {
     type Output = Self;
 
-    fn mul(self, rhs: u64) -> Self::Output {
-        self.mul_u64(rhs).expect("Money multiplication overflow")
+    fn mul(self, rhs: u32) -> Self::Output {
+        self.mul_u32(rhs).expect("Money multiplication overflow")
     }
 }
 
-impl<C: Currency> Mul<Money<C>> for u64 {
+impl<C: Currency> Mul<Money<C>> for u32 {
     type Output = Money<C>;
 
     fn mul(self, rhs: Money<C>) -> Self::Output {
-        rhs.mul_u64(self).expect("Money multiplication overflow")
+        rhs.mul_u32(self).expect("Money multiplication overflow")
     }
 }
 
-impl<C: Currency> Div<u64> for Money<C> {
+impl<C: Currency> Div<u32> for Money<C> {
     type Output = Self;
 
-    fn div(self, rhs: u64) -> Self::Output {
-        self.div_u64(rhs).expect("Money division by zero")
+    fn div(self, rhs: u32) -> Self::Output {
+        self.div_u32(rhs).expect("Money division by zero")
     }
 }
 
@@ -207,7 +207,7 @@ pub trait Currency: Sized + Send + Sync + 'static {
 
     /// Количество минимальных единиц в одной основной единице
     /// Например: 100 копеек = 1 рубль, 100 центов = 1 доллар
-    const MINOR_UNITS: u64;
+    const MINOR_UNITS: u32;
 
     /// Количество знаков после запятой для отображения
     const DECIMAL_PLACES: u8;
@@ -225,7 +225,7 @@ pub mod currencies {
     impl Currency for Ruble {
         const SYMBOL: char = '₽';
         const NAME: &'static str = "Russian Ruble";
-        const MINOR_UNITS: u64 = 100;
+        const MINOR_UNITS: u32 = 100;
         const DECIMAL_PLACES: u8 = 2;
     }
 
@@ -234,7 +234,7 @@ pub mod currencies {
     impl Currency for Dollar {
         const SYMBOL: char = '$';
         const NAME: &'static str = "US Dollar";
-        const MINOR_UNITS: u64 = 100;
+        const MINOR_UNITS: u32 = 100;
         const DECIMAL_PLACES: u8 = 2;
     }
 
@@ -243,7 +243,7 @@ pub mod currencies {
     impl Currency for Euro {
         const SYMBOL: char = '€';
         const NAME: &'static str = "Euro";
-        const MINOR_UNITS: u64 = 100;
+        const MINOR_UNITS: u32 = 100;
         const DECIMAL_PLACES: u8 = 2;
     }
 
@@ -252,7 +252,7 @@ pub mod currencies {
     impl Currency for Yuan {
         const SYMBOL: char = '¥';
         const NAME: &'static str = "Chinese Yuan";
-        const MINOR_UNITS: u64 = 100;
+        const MINOR_UNITS: u32 = 100;
         const DECIMAL_PLACES: u8 = 2;
     }
 }
