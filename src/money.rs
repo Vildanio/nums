@@ -51,18 +51,13 @@ impl<C: Currency> Money<C> {
     // ===== Геттеры =====
 
     /// Возвращает значение в минимальных единицах
-    pub const fn as_minor(&self) -> u32 {
+    pub const fn minor(&self) -> u32 {
         self.value
     }
 
     /// Возвращает значение в основных единицах
-    pub const fn as_major(&self) -> u32 {
+    pub const fn major(&self) -> u32 {
         self.value / C::MINOR_UNITS
-    }
-
-    /// Возвращает значение в основных единицах как число с плавающей точкой
-    pub fn as_f64(&self) -> f64 {
-        self.value as f64 / C::MINOR_UNITS as f64
     }
 
     /// Возвращает символ валюты
@@ -82,43 +77,26 @@ impl<C: Currency> Money<C> {
         self.value == 0
     }
 
-    /// Проверяет, является ли сумма положительной
-    pub const fn is_positive(&self) -> bool {
-        self.value > 0
-    }
-
     // ===== Арифметические операции =====
 
     /// Сложение денег
-    pub const fn add(self, rhs: Self) -> Option<Self> {
-        match self.value.checked_add(rhs.value) {
-            Some(sum) => Some(Self::from_minor(sum)),
-            None => None,
-        }
+    pub const fn add_money(self, rhs: Self) -> Self {
+        Self::from_minor(self.value + rhs.value)
     }
 
     /// Вычитание денег
-    pub const fn sub(self, rhs: Self) -> Option<Self> {
-        match self.value.checked_sub(rhs.value) {
-            Some(diff) => Some(Self::from_minor(diff)),
-            None => None,
-        }
+    pub const fn sub_money(self, rhs: Self) -> Self {
+        Self::from_minor(self.value - rhs.value)
     }
 
     /// Умножение на целое число
-    pub const fn mul_u32(self, rhs: u32) -> Option<Self> {
-        match self.value.checked_mul(rhs) {
-            Some(product) => Some(Self::from_minor(product)),
-            None => None,
-        }
+    pub const fn mul_u32(self, value: u32) -> Self {
+        Self::from_minor(self.value * value)
     }
 
     /// Деление на целое число
-    pub const fn div_u32(self, rhs: u32) -> Option<Self> {
-        match self.value.checked_div(rhs) {
-            Some(quotient) => Some(Self::from_minor(quotient)),
-            None => None,
-        }
+    pub const fn div_u32(self, value: u32) -> Self {
+        Self::from_minor(self.value / value)
     }
 }
 
@@ -130,7 +108,7 @@ impl<C: Currency> Add for Money<C> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        self.add(rhs).expect("Money addition overflow")
+        self.add_money(rhs)
     }
 }
 
@@ -138,7 +116,7 @@ impl<C: Currency> Sub for Money<C> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        self.sub(rhs).expect("Money subtraction underflow")
+        self.sub_money(rhs)
     }
 }
 
@@ -146,7 +124,7 @@ impl<C: Currency> Mul<u32> for Money<C> {
     type Output = Self;
 
     fn mul(self, rhs: u32) -> Self::Output {
-        self.mul_u32(rhs).expect("Money multiplication overflow")
+        self.mul_u32(rhs)
     }
 }
 
@@ -154,7 +132,7 @@ impl<C: Currency> Mul<Money<C>> for u32 {
     type Output = Money<C>;
 
     fn mul(self, rhs: Money<C>) -> Self::Output {
-        rhs.mul_u32(self).expect("Money multiplication overflow")
+        rhs.mul_u32(self)
     }
 }
 
@@ -162,7 +140,7 @@ impl<C: Currency> Div<u32> for Money<C> {
     type Output = Self;
 
     fn div(self, rhs: u32) -> Self::Output {
-        self.div_u32(rhs).expect("Money division by zero")
+        self.div_u32(rhs)
     }
 }
 
